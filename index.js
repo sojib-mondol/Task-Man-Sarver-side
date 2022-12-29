@@ -20,12 +20,27 @@ async function run(){
     try{
         const tasks = client.db('TaskMan').collection('MyTasks');
 
+
+        // gettung crt tv data
+        app.get('/tasks', async(req, res) => {
+            const query = {};
+            const result = await tasks.find(query).toArray();
+            res.send(result);
+        })
+
         app.post('/tasks', async(req, res) => {
             const task = req.body;
             //console.log(task);
             const result = await tasks.insertOne(task);
             res.send(result);
           })
+
+        app.delete('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await tasks.deleteOne(filter);
+            res.send(result);
+        })
 
     }
     finally{
@@ -41,4 +56,4 @@ app.get('/', async(req, res) => {
     res.send('Task man Server is running')
 })
 
-app.listen(port, () => console.log(`Doctors portal running on ${port}`))
+app.listen(port, () => console.log(`Task man Server is running ${port}`))
